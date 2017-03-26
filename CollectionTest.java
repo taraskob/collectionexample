@@ -35,7 +35,7 @@ class CollectionTest {
             try {
                 String s;
                 while ((s = in.readLine()) != null) {
-                    SortedSet<String> ss = filesTreeSet.subSet(s + '\\', s + Character.MAX_VALUE);
+                    SortedSet<String> ss = filesTreeSet.subSet(s +'\\', s+'\\' + Character.MAX_VALUE);
                     dirsTreeMap.put(s, new TreeSet(ss));
                 }
             } finally {
