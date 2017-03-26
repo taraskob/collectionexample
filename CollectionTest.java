@@ -49,9 +49,10 @@ class CollectionTest {
 
     static void writeMapInFile(TreeMap<String, TreeSet> dirsTreeMap) throws IOException {
         FileWriter writer = new FileWriter("result.txt");
-            Set<Map.Entry<String, TreeSet>> es = dirsTreeMap.entrySet();
+            Set<Map.Entry<String , TreeSet>> es = dirsTreeMap.entrySet();
             for (Map.Entry<String, TreeSet> me : es) {
-                writer.write(String.valueOf(me) + "\r\n");
+                writer.write(me.getKey()+ "\r\n");
+                writer.write(me.getValue()+ "\r\n");
          }
          writer.close();
     }
