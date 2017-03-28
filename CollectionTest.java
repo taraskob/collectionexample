@@ -116,25 +116,6 @@ class CollectionTest {
         }
     }
 
-    static ArrayList<String> readInArray(String filename) {
-        File file = new File(filename);
-        ArrayList<String> al = new ArrayList<>();
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(file.getAbsoluteFile()));
-            try {
-                String s;
-                while ((s = in.readLine()) != null) {
-                    al.add(s);
-                }
-            } finally {
-                in.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return al;
-    }
-
     static void writeMapInFile(TreeMap<String, TreeSet> dirsTreeMap) throws IOException {
         FileWriter writer = new FileWriter("result.txt");
         Set<Map.Entry<String, TreeSet>> es = dirsTreeMap.entrySet();
