@@ -5,11 +5,10 @@ import static java.lang.String.valueOf;
 
 class CollectionTest {
     public static void main(String[] args) {
-        if (CollectionMain.FilesExists("dirs.txt", "files.txt")) {
+        if (FilesExists("dirs.txt", "files.txt")) {
             TreeSet<String> filesTreeSet = new TreeSet<>();
-            TreeMap<String, TreeSet> dirsTreeMap = new TreeMap<>();
-            CollectionMain.fillTreeSet("files.txt", filesTreeSet);
-            CollectionMain.fillTreeMap("dirs.txt", dirsTreeMap, filesTreeSet);
+            fillTreeSet("files.txt", filesTreeSet);
+            TreeMap<String, TreeSet> dirsTreeMap = CollectionMain.fillTreeMap();
             try {
                 mapCompleteness(dirsTreeMap, "dirs.txt");
                 mapCompleteness(dirsTreeMap, "files.txt");
@@ -19,6 +18,50 @@ class CollectionTest {
                 e.printStackTrace();
             }
         }
+    }
+
+    static void fillTreeSet(String files_txtName, TreeSet<String> filesTreeSet) {
+        File file = new File(files_txtName);
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(file.getAbsoluteFile()));
+            try {
+                String filesName;
+                while ((filesName = in.readLine()) != null) {
+                    filesTreeSet.add(filesName);
+                }
+            } finally {
+                in.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static ArrayList<String> getDirList() {
+        return fillArrayList("dirs.txt");
+    }
+
+    static ArrayList<String> getFileList() {
+        return fillArrayList("files.txt");
+    }
+
+    static ArrayList<String> fillArrayList(String readFile) {
+        File file = new File(readFile);
+        ArrayList<String> alReadData = new ArrayList<>();
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(file.getAbsoluteFile()));
+            try {
+                String dirs_files_Name;
+                while ((dirs_files_Name = in.readLine()) != null) {
+                    alReadData.add(dirs_files_Name);
+                }
+            } finally {
+                in.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return alReadData;
     }
 
     static void mapCorrectness(TreeMap<String, TreeSet> dirsTreeMap, TreeSet<String> filesTreeSet, String s) {
@@ -50,13 +93,13 @@ class CollectionTest {
         Collection valueSet = null;
         if (filename.equals("dirs.txt")) {
             keySet = dirsTreeMap.keySet();
-            CollectionMain.fillTreeSet(filename, testSet);
+            fillTreeSet(filename, testSet);
             file_missing = "missing_dirs.txt";
             ifContains(keySet, testSet, filename, file_missing);
         }
         if (filename.equals("files.txt")) {
             valueSet = toSet(dirsTreeMap.values());
-            CollectionMain.fillTreeSet(filename, testSet);
+            fillTreeSet(filename, testSet);
             file_missing = "missing_files.txt";
             ifContains(valueSet, testSet, filename, file_missing);
         }
@@ -124,5 +167,15 @@ class CollectionTest {
             writer.write(me.getValue() + "\r\n");
         }
         writer.close();
+    }
+
+    static boolean FilesExists(String dirs_txt, String files_txt) {
+        File file = new File(dirs_txt);
+        if (!file.exists())
+            return false;
+        file = new File(files_txt);
+        if (!file.exists())
+            return false;
+        return true;
     }
 }
