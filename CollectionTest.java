@@ -5,6 +5,7 @@ import static java.lang.String.valueOf;
 
 class CollectionTest {
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
         if (FilesExists("dirs.txt", "files.txt")) {
             TreeSet<String> filesTreeSet = new TreeSet<>();
             fillTreeSet("files.txt", filesTreeSet);
@@ -14,6 +15,8 @@ class CollectionTest {
                 mapCompleteness(dirsTreeMap, "files.txt");
                 mapCorrectness(dirsTreeMap, filesTreeSet, "dirs.txt");
                 writeMapInFile(dirsTreeMap);
+                long timeSpent = System.currentTimeMillis();
+                System.out.println("run time is " + (timeSpent-startTime ));
             } catch (IOException e) {
                 e.printStackTrace();
             }
