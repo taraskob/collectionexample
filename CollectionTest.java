@@ -8,7 +8,7 @@ class CollectionTest {
         if (FilesExists("dirs.txt", "files.txt")) {
             TreeSet<String> filesTreeSet = new TreeSet<>();
             fillTreeSet("files.txt", filesTreeSet);
-            TreeMap<String, TreeSet> dirsTreeMap = CollectionMain.fillTreeMap();
+            TreeMap<String, TreeSet> dirsTreeMap = CollectionMain.fillTreeMap(getDirList(),getFileList());
             try {
                 mapCompleteness(dirsTreeMap, "dirs.txt");
                 mapCompleteness(dirsTreeMap, "files.txt");

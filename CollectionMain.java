@@ -3,13 +3,13 @@ import java.util.*;
 
 class CollectionMain {
     public static void main(String[] args) {
-        fillTreeMap();
+        fillTreeMap(CollectionTest.getDirList(),CollectionTest.getFileList());
     }
 
-    static TreeMap<String, TreeSet> fillTreeMap() {
-        TreeSet<String> filesTreeSet = new TreeSet<>(CollectionTest.getFileList());
+    static TreeMap<String, TreeSet> fillTreeMap(ArrayList<String> dirList,ArrayList<String> fileList) {
+        TreeSet<String> filesTreeSet = new TreeSet<>(fileList);
         TreeMap<String, TreeSet> dirsTreeMap = new TreeMap<>();
-        ArrayList<String> dirsList = CollectionTest.getDirList();
+        ArrayList<String> dirsList = dirList;
         for (String dirName : dirsList) {
             SortedSet<String> ss_approx = filesTreeSet.subSet(dirName + '\\', dirName + '\\' + Character.MAX_VALUE);
             TreeSet ss_exact = new TreeSet();
