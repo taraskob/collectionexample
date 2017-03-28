@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.*;
 
 class CollectionMain {
@@ -18,8 +17,7 @@ class CollectionMain {
             for (String fileName : ss_approx) {
                 if (low.lastIndexOf('\\') == fileName.lastIndexOf('\\'))
                     ss_exact.add(fileName);
-                           }
-
+            }
             dirsTreeMap.put(dirName, new TreeSet(ss_exact));
         }
         return dirsTreeMap;
