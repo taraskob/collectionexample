@@ -9,14 +9,17 @@ class CollectionTest {
         if (FilesExists("dirs.txt", "files.txt")) {
             TreeSet<String> filesTreeSet = new TreeSet<>();
             fillTreeSet("files.txt", filesTreeSet);
-            TreeMap<String, TreeSet> dirsTreeMap = CollectionMain.fillTreeMap(getDirList(),getFileList());
+            TreeMap<String, TreeSet> dirsTreeMap = CollectionMain.fillTreeMap(getDirList(), getFileList());
             try {
-                mapCompleteness(dirsTreeMap, "dirs.txt");
-                mapCompleteness(dirsTreeMap, "files.txt");
-                mapCorrectness(dirsTreeMap, filesTreeSet, "dirs.txt");
+                if (!(mapCompleteness(dirsTreeMap, "dirs.txt") && !(mapCompleteness(dirsTreeMap, "files.txt")
+                        && !(mapCorrectness(dirsTreeMap, filesTreeSet, "dirs.txt")))))
+                    System.out.println("FAIL!");
+                else
+                    System.out.println("TEST RESULT IS OK!");
+
                 writeMapInFile(dirsTreeMap);
                 long timeSpent = System.currentTimeMillis();
-                System.out.println("run time is " + (timeSpent-startTime ));
+                System.out.println("run time is " + (timeSpent - startTime));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -67,7 +70,7 @@ class CollectionTest {
         return alReadData;
     }
 
-    static void mapCorrectness(TreeMap<String, TreeSet> dirsTreeMap, TreeSet<String> filesTreeSet, String s) {
+    static boolean mapCorrectness(TreeMap<String, TreeSet> dirsTreeMap, TreeSet<String> filesTreeSet, String s) {
         Set<Map.Entry<String, TreeSet>> esMap = dirsTreeMap.entrySet();
         ArrayList<String> al = new ArrayList<>();
         for (Map.Entry<String, TreeSet> me : esMap) {
@@ -85,27 +88,27 @@ class CollectionTest {
         if (al.size() > 0) {
             System.out.println("Map IS NOT CORRECT See the map_err.txt");
             writeErr("map_err.txt", al);
+            return false;
         } else
             System.out.println("Map is correct");
+        return true;
     }
 
-    static void mapCompleteness(TreeMap<String, TreeSet> dirsTreeMap, String filename) {
-        TreeSet<String> testSet = new TreeSet<>();
+
+    static boolean mapCompleteness(TreeMap<String, TreeSet> dirsTreeMap, String filename) {
         String file_missing = "";
-        Set keySet = null;
-        Collection valueSet = null;
+        Collection collectionValue = null;
         if (filename.equals("dirs.txt")) {
-            keySet = dirsTreeMap.keySet();
-            fillTreeSet(filename, testSet);
+            Set keySet = dirsTreeMap.keySet();
             file_missing = "missing_dirs.txt";
-            ifContains(keySet, testSet, filename, file_missing);
+            collectionValue = keySet;
         }
         if (filename.equals("files.txt")) {
-            valueSet = toSet(dirsTreeMap.values());
-            fillTreeSet(filename, testSet);
+            Collection valueSet = toSet(dirsTreeMap.values());
             file_missing = "missing_files.txt";
-            ifContains(valueSet, testSet, filename, file_missing);
+            collectionValue = valueSet;
         }
+        return ifContains(dirsTreeMap, collectionValue, filename, file_missing);
     }
 
     static TreeSet<String> toSet(Collection<TreeSet> values) {
@@ -123,17 +126,24 @@ class CollectionTest {
         return tSet;
     }
 
-    static void ifContains(Collection map, TreeSet<String> testSet, String filename, String file_missing) {
-        if (map.containsAll(testSet))
+    static boolean ifContains(TreeMap<String, TreeSet> map, Collection collectionValue, String filename, String file_missing) {
+        TreeSet<String> testSet = new TreeSet<>();
+        TreeSet<String> dirSet = new TreeSet<>();
+        fillTreeSet(filename, testSet);
+        if (collectionValue.containsAll(testSet)) {
             System.out.println("Map contains all the data from the file " + filename);
-        else {
-            System.out.println("Map contains NOT ALL the data from the file " + filename + " See the " + file_missing);
+            return true;
+        } else {
+            if (filename == "files.txt") {
+
+                fillTreeSet("dirs.txt", dirSet);
+            }
             ArrayList<String> al = new ArrayList<>();
-            testSet.removeAll(map);
+            testSet.removeAll(collectionValue);
             int missed = 0;
             for (String str : testSet) {
                 missed = 0;
-                for (Object ob : map) {
+                for (Object ob : collectionValue) {
                     String strobj = valueOf(ob);
                     if (strobj.startsWith(str)) {
                         missed = 0;
@@ -143,9 +153,25 @@ class CollectionTest {
                         missed += 1;
                 }
                 if (missed > 0)
-                    al.add(str);
+                    if (filename == "dirs.txt")
+                        al.add(str);
+                    else {
+                        for (String dirName : dirSet) {
+                            if (str.startsWith(dirName)) {
+                                al.add(str);
+                                break;
+                            }
+                        }
+                    }
             }
-            writeErr(file_missing, al);
+
+            if (al.size() > 0) {
+                writeErr(file_missing, al);
+                System.out.println("Map contains NOT ALL the data from the file " + filename + " See the " + file_missing);
+                return false;
+            } else
+                System.out.println("Map contains all the data from the file " + filename);
+            return true;
         }
     }
 
