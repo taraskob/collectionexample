@@ -15,25 +15,18 @@ class FillMap {
         Collections.sort(fileList, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                int result = o1.substring(0, o1.lastIndexOf('\\')).compareTo(o2.substring(0, o2.lastIndexOf('\\')));
-                if (result == 0) {
-                    return o1.compareTo(o2);
-                } else {
-                    return result;
-                }
+                return o1.substring(0, o1.lastIndexOf('\\')+1).compareTo(o2.substring(0, o2.lastIndexOf('\\')+1));
             }
         });
-
         TreeMap<String, TreeSet> dirsTreeMap = new TreeMap<>();
         for (String dirName : dirSet) {
             TreeSet ss_exact = new TreeSet();
-            String low = dirName + '\\';
             String fileName = "";
             for (int i = fileStartInd; i < fileList.size(); i++) {
                 fileName = fileList.get(i);
-                if (fileName.startsWith(low) && (low.lastIndexOf('\\') == fileName.lastIndexOf('\\')))
+                if (fileName.startsWith(dirName) && (dirName.lastIndexOf('\\') == fileName.lastIndexOf('\\')))
                     ss_exact.add(fileName);
-                if (fileName.substring(0, fileName.lastIndexOf('\\')).compareTo(dirName) > 0) {
+                if (fileName.substring(0, fileName.lastIndexOf('\\') + 1).compareTo(dirName) > 0) {
                     fileStartInd = i;
                     break;
                 }
